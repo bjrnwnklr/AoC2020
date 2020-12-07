@@ -31,11 +31,21 @@ seats = dict()
 with open(f_name, 'r') as f:
     for bpass in f.readlines():
         seat = decode_seat(bpass.strip('\n'))
-        seats[(seat[0], seat[1])] = seat[2]
+        seats[seat[2]] = (seat[0], seat[1])
 
 # find highest ID in seats
-max_seat = max(seats, key=seats.get)
+max_seat = max(seats)
 
 print(f'Part 1: highest seat ID: {max_seat}: {seats[max_seat]}')
 
 # Part 1: 801
+
+# find lowest and highest ID (highest we already have), then range through them and check if +1 and -1 are in the list
+
+min_seat = min(seats)
+
+for s in range(min_seat, max_seat):
+    if s not in seats and s-1 in seats and s+1 in seats:
+        print(f'Part 2: Your seat is {s}, between seats {seats[s-1]} and {seats[s+1]}.')
+
+# Part 2: Your seat is 597, between seats (74, 4) and (74, 6).
