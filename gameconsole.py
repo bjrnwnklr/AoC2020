@@ -17,7 +17,6 @@ class GameConsole:
         self.accumulator = 0
         self.ip = 0
         self.prgm = defaultdict(tuple)
-        self.stopped = False
         self.visited_ip = set()
 
         for ipcount, line in enumerate(raw_mem):
@@ -26,7 +25,7 @@ class GameConsole:
             argument = int(instruction[1])
             self.prgm[ipcount] = (operation, argument)
 
-        self.last_instr = len(self.prgm) - 1
+        self.last_instr = len(self.prgm)
 
     # classmethod to generate an instance from a filename instead of memory input
     # this is for convenience really...
@@ -38,11 +37,10 @@ class GameConsole:
 
     def run(self):
         # run until we meet an endless loop and set the stopped flag
-        while not self.stopped:
+        while True:
             # check if the program terminated properly by trying to execute an instruction exactly below the last
-            if self.ip == self.last_instr + 1:
+            if self.ip == self.last_instr:
                 logging.info(f'[{self.ip}, {self.accumulator}]: Program terminated.')
-                self.stopped = True
                 return GC_TERMINATED
 
             # check if we have been at the IP before
@@ -58,7 +56,6 @@ class GameConsole:
             # we've been here before, stop execution
             else:
                 logging.info(f'[{self.ip}, {self.accumulator}]: Visited IP before, stopping.')
-                self.stopped = True
                 return GC_STOPPED
 
     def _exec_op(self, op, arg):
