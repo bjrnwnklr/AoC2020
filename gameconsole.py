@@ -1,6 +1,9 @@
 from collections import defaultdict
 import logging
 
+GC_TERMINATED = 1
+GC_STOPPED = -1
+
 
 class GameConsole:
 
@@ -23,7 +26,7 @@ class GameConsole:
             argument = int(instruction[1])
             self.prgm[ipcount] = (operation, argument)
 
-        self.last_instr = len(self.prgm)
+        self.last_instr = len(self.prgm) - 1
 
     # classmethod to generate an instance from a filename instead of memory input
     # this is for convenience really...
@@ -40,6 +43,7 @@ class GameConsole:
             if self.ip == self.last_instr + 1:
                 logging.info(f'[{self.ip}, {self.accumulator}]: Program terminated.')
                 self.stopped = True
+                return GC_TERMINATED
 
             # check if we have been at the IP before
             elif self.ip not in self.visited_ip:
@@ -55,6 +59,7 @@ class GameConsole:
             else:
                 logging.info(f'[{self.ip}, {self.accumulator}]: Visited IP before, stopping.')
                 self.stopped = True
+                return GC_STOPPED
 
     def _exec_op(self, op, arg):
 

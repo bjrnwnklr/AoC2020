@@ -10,6 +10,6 @@ if __name__ == '__main__':
     f_name = 'input.txt'
 
     hgc = GameConsole.from_file(f_name)
-    hgc.run()
+    status = hgc.run()
 
     # part 1: 1087
