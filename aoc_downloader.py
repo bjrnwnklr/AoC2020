@@ -19,16 +19,13 @@ SESSION_COOKIE = '---'
 
 if __name__ == '__main__':
 
-    # check if session cookie is set, otherwise abort
-    if SESSION_COOKIE == '---':
-        raise ValueError('SESSION COOKIE NOT SET!!!!')
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('year', help='year to download')
-    parser.add_argument('day', help='day to download')
+    parser.add_argument('year', type=int, help='year to download')
+    parser.add_argument('day', type=int, help='day to download')
     parser.add_argument('-v', '--verbose', help='increase output verbosity', action='store_true')
     parser.add_argument('-o', '--offline', help='prepare for offline use by downloading AoC HTML page for the day',
                         action='store_true')
+    parser.add_argument('-s', '--sessioncookie', help='session cookie for the AoC website')
     args = parser.parse_args()
 
     # check if --verbose was set
@@ -39,8 +36,10 @@ if __name__ == '__main__':
         # standard is ERRORS only
         logging.basicConfig(level=logging.ERROR)
 
-    year = int(args.year)
-    day = int(args.day)
+
+    # handle year and day arguments
+    year = args.year
+    day = args.day
 
     # do some sense checking on the year and day
     if year < YEAR_FROM or year > YEAR_TO:
@@ -52,6 +51,13 @@ if __name__ == '__main__':
     print(f'Advent of Code downloader, v{VERSION}.')
     print(f'(c) 2020, Bjoern Winkler')
     print(f'-- Downloading AoC {year}, day {day} --')
+
+    # check if session cookie is set either via cmd line argument or in code, otherwise abort
+    if args.sessioncookie:
+        SESSION_COOKIE = args.sessioncookie
+        logging.info(f'Setting session cookie to {SESSION_COOKIE}.')
+    elif SESSION_COOKIE == '---':
+        raise ValueError('SESSION COOKIE NOT SET!!!!')
 
     # check if a directory for the day exists
     p = Path('.') / f'{day:02}'
