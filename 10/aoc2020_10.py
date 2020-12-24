@@ -33,6 +33,7 @@ print(f'Part 1: {distribution[1] * distribution[3]}.')
 
 # Part 1: 1656
 
+# Part 2, recursive with memoization
 @lru_cache
 def sum_of_child_nodes(node):
     if not children[node]:
@@ -54,3 +55,13 @@ part2 = sum_of_child_nodes(0)
 print(f'Part 2: {part2}')
 
 # Part 2: 56693912375296
+
+# Part 2, dynamic programming
+
+paths_to = defaultdict(int, {0: 1})
+all_adapters_sorted = sorted(adapters)
+
+for a in all_adapters_sorted:
+    paths_to[a] = paths_to[a - 1] + paths_to[a - 2] + paths_to[a - 3]
+
+print(f'Part 2, dp: {paths_to[all_adapters_sorted[-1]]}')
