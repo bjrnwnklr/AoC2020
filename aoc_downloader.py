@@ -65,12 +65,20 @@ if __name__ == '__main__':
         logging.info(f'Directory {p} does not exist, creating it.')
         p.mkdir()
 
-    # check if a stub file named aoc{year}_{day}.py exists
-    # if not, create an empty file
-    stub_file = p / f'aoc{year}_{day:02}.py'
-    if not stub_file.exists():
-        logging.info(f'Stub file {stub_file} does not exist, creating it')
-        stub_file.touch()
+    # create a number of stub files
+    files = {
+        'stub': f'aoc{year}_{day:02}.py',
+        'md': f'{day:02}.md',
+        'ex': 'ex1.txt'
+    }
+
+    for file in files:
+        # check if file exists
+        # if not, create an empty file
+        f_name = p / files[file]
+        if not f_name.exists():
+            logging.info(f'{file} file {f_name} does not exist, creating it')
+            f_name.touch()
 
     # prepare session cookie etc
     cookies = {'session': SESSION_COOKIE}
