@@ -15,8 +15,13 @@ for turn, num in enumerate(numbers, start=1):
 turns = len(numbers)
 last_num = numbers[-1]
 
+turns_1 = 2020
+turns_2 = 30_000_000
+
+br = 1_000_000
+
 # now the game starts
-while turns < 2020:
+while turns < turns_2:
     # increase turns count since we started a new turn
     turns += 1
     previous_turns = turn_mem[last_num]
@@ -28,7 +33,10 @@ while turns < 2020:
         last_num = previous_turns[-1] - previous_turns[-2]
 
     turn_mem[last_num].append(turns)
+    if turns % br == 0:
+        print(f'Turn {turns}. Number {last_num}')
 
 print(f'Turn {turns}. Number {last_num}')
 
 # Part 1: 412
+# Part 2: 243
