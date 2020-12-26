@@ -21,7 +21,7 @@ turns_2 = 30_000_000
 br = 1_000_000
 
 # now the game starts
-while turns < turns_2:
+while turns < turns_1:
     # increase turns count since we started a new turn
     turns += 1
     previous_turns = turn_mem[last_num]
