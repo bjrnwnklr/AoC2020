@@ -28,15 +28,6 @@ def get_grid_dims(g, d):
     return mins, maxs
 
 
-def print_grid(g, d):
-    mins, maxs = get_grid_dims(g, d)
-    for z in range(mins[2], maxs[2] + 1):
-        print(f'z={z}')
-        for y in range(mins[1], maxs[1] + 1):
-            print(''.join(['.' if g[(x, y, z)] == 0 else '#' for x in range(mins[0], maxs[0] + 1)]))
-        print('\n')
-
-
 # f_name = 'ex1.txt'
 f_name = 'input.txt'
 dims = 4
@@ -49,8 +40,6 @@ with open(f_name, 'r') as f:
             coord = tuple([x, y] + [0] * zero_dims)
             grid[coord] = 1 if col == '#' else 0
 
-# print_grid(grid, dims)
-
 cycles = 6
 
 for cycle in range(1, cycles+1):
@@ -62,14 +51,8 @@ for cycle in range(1, cycles+1):
     all_coords = product(*[(range(mins[i] - 1, maxs[i] + 2)) for i in range(dims)])
     for c in all_coords:
         temp_grid[c] = get_state(c, grid, dims)
-    # for z in range(mins[2] - 1, maxs[2] + 2):
-    #     for y in range(mins[1] - 1, maxs[1] + 2):
-    #         for x in range(mins[0] - 1, maxs[0] + 2):
-    #             temp_grid[(x, y, z)] = get_state((x, y, z), grid, dims)
 
     grid = temp_grid.copy()
-    # print(f'After {cycle} cycles:\n')
-    # print_grid(grid, dims)
 
 # we're done, spit out the number of active cubes
 part1 = sum(grid.values())
