@@ -1,4 +1,5 @@
 import re
+import timeit
 
 # f_name = 'ex1.txt'
 f_name = 'input.txt'
@@ -21,6 +22,7 @@ for rule in raw_rules.split('\n'):
     # process subrules and store in rules directory
     rules[rule_num] = subrules
 
+start_time = timeit.default_timer()
 # start with rule 0 and replace any occurrences of digits with their rule representation
 rule_zero = rules[0]
 # find all digits in rule 0
@@ -40,6 +42,7 @@ while digits:
     # recreate the digits contained in the updated rule_zero string
     digits = set(map(int, re.findall(r'(\d+)', rule_zero)))
 
+print(timeit.default_timer() - start_time)
 # now flatten the pattern by removing all blanks and adding start and end anchors
 rule_zero = r'^' + re.sub(r'\s', '', rule_zero) + r'$'
 # compile the rule, then match on each message
