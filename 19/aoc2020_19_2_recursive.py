@@ -7,16 +7,15 @@ import timeit
 def expand_rule(r):
     rule = rules[r]
     # atomic case - if we have an 'a' or 'b'
-    if rule in ['\"a\"', '\"b\"']:
-        return rule.strip('\"')
+    if rule in 'ab':
+        return rule
     prefix = suffix = ''
     # handle a | in the rule - enclose with parentheses
     if '|' in rule:
         prefix = '('
         suffix = ')'
     # expand all included rules
-    stripped_rule = rule.split()
-    return prefix + ''.join(expand_rule(int(x)) if x != '|' else x for x in stripped_rule) + suffix
+    return prefix + ''.join(expand_rule(int(x)) if x != '|' else x for x in rule.split()) + suffix
 
 
 # f_name = 'ex2.txt'
@@ -33,7 +32,6 @@ rules = dict()
 for rule in raw_rules.split('\n'):
     rule_num, subrules = rule.split(':')
     rule_num = int(rule_num)
-    subrules = subrules.strip()
     # process subrules and store in rules directory
     # for example 2, the longest message is 45 characters.
     # since rule 8 is a match of 5 characters, we could extend to a maximum of 9 repetitions
@@ -47,7 +45,7 @@ for rule in raw_rules.split('\n'):
     elif rule_num == 11:
         rules[rule_num] = ' | '.join(' '.join(['42'] * i + ['31'] * i) for i in range(1, 11))
     else:
-        rules[rule_num] = subrules
+        rules[rule_num] = subrules.strip().strip('\"')
 
 start_time = timeit.default_timer()
 # start with rule 0 and replace any occurrences of digits with their rule representation
