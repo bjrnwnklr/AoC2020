@@ -43,8 +43,10 @@ for rule in rules:
     for r in list(re.findall(r'\d+', rules[rule])):
         contained_in[int(r)].add(rule)
 
+reverse_list = []
 while finalized_queue:
     rule = finalized_queue.pop(0)
+    reverse_list.append(rule)
     prefix = suffix = ''
     if '|' in orig_rules[rule]:
         prefix = '('
@@ -70,5 +72,7 @@ comp_re = re.compile(rule_zero)
 
 part1 = sum(1 if comp_re.search(m) else 0 for m in messages)
 print(f'Part 1: {part1}')
+
+print(reverse_list[::-1])
 
 # Part 1: 168
