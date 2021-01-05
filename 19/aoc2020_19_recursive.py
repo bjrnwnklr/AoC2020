@@ -43,6 +43,12 @@ rule_zero = r'^' + rule_zero + r'$'
 # compile the rule, then match on each message
 comp_re = re.compile(rule_zero)
 
+for m in messages:
+    if comp_re.match(m):
+        print(f'Valid syntax: {m}')
+    else:
+        print(f'Incorrect syntax: {m}')
+
 part1 = sum(bool(comp_re.match(m)) for m in messages)
 print(f'Part 1: {part1}')
 
