@@ -102,6 +102,10 @@ def p_r12(p):
     pass
 
 
+def p_r1(p):
+    """1 : A"""
+    pass
+
 
 def p_r6(p):
     """6 : 14 14
@@ -165,21 +169,14 @@ def p_r19(p):
     pass
 
 
-
-def p_r15(p):
-    """15 : 1
-        | 14"""
-    pass
-
-
-
 def p_r14(p):
     """14 : B"""
     pass
 
 
-def p_r1(p):
-    """1 : A"""
+def p_r15(p):
+    """15 : 1
+        | 14"""
     pass
 
 
