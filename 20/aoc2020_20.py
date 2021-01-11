@@ -229,3 +229,40 @@ for i, row in enumerate(image_grid):
     for t in row:
         print(t)
         print(aligned_tiles[t])
+
+print()
+print('Image tiles:')
+for row in image_grid:
+    print(row)
+
+# now create a representation of the image:
+# - strip the borders from each tile
+# - assemble a np array from all resulting tiles
+final_tiles = dict()
+for row in image_grid:
+    for t in row:
+        temp_tile = aligned_tiles[t][1:-1, 1:-1].copy()
+        final_tiles[t] = temp_tile
+
+print()
+print('Final reshaped tiles:')
+for i, row in enumerate(image_grid):
+    print(f'Row {i}:')
+    for t in row:
+        print(t)
+        print(final_tiles[t])
+
+# stack the tiles per row
+image_rows = []
+for row in image_grid:
+    new_row = np.hstack([final_tiles[t] for t in row])
+    image_rows.append(new_row)
+
+final_image = np.vstack(image_rows)
+
+print()
+print('Final image:')
+print(final_image)
+
+# get string representation - this doesnt work...
+# print(np.array2string(final_image))
