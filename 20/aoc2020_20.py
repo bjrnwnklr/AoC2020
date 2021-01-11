@@ -1,4 +1,5 @@
 import math
+import re
 from collections import defaultdict
 import numpy as np
 
@@ -28,8 +29,8 @@ def get_tile_checksum(t):
     return checksum, checksum_matching
 
 
-f_name = 'ex1.txt'
-# f_name = 'input.txt'
+# f_name = 'ex1.txt'
+f_name = 'input.txt'
 
 tile_dict = dict()
 
@@ -264,5 +265,76 @@ print()
 print('Final image:')
 print(final_image)
 
-# get string representation - this doesnt work...
-# print(np.array2string(final_image))
+
+# get string representation and prettify image (replace 0 with '.' and '1' with '#'
+def pretty_image(nparr):
+    img = []
+    for row in nparr:
+        img.append(''.join('#' if c == 1 else '.' for c in row))
+    return img
+
+def print_image(img):
+    for row in img:
+        print(row)
+
+img_to_print = pretty_image(final_image)
+print()
+print('Final image in pretty:')
+print_image(img_to_print)
+
+regex_1 = re.compile(r'[.#]{18}#')
+regex_2 = re.compile(r'#(?:[.#]{4}##){3}#')
+regex_3 = re.compile(r'[.#](?:#[.#]{2}){5}#')
+
+# go through each variant of the image (rotated and flipped) and look for sea monster patterns
+
+monster_count = 0
+#while not found:
+for rot in [0, 1, 2, 3]:
+    for flip in [False, True]:
+        found = False
+        test_image = final_image.copy()
+        if flip:
+            test_image = np.flipud(test_image)
+        test_image = np.rot90(test_image, rot)
+        pretty_test_image = pretty_image(test_image)
+
+        # find the 2nd pattern
+        for i in range(1, len(pretty_test_image)):
+            # use finditer since we need to find all occurrences in one line (search only returns the FIRST match
+            # per line so might not catch another match later in the line)
+            match_line2 = regex_2.finditer(pretty_test_image[i])
+            if match_line2:
+                for m in match_line2:
+                    print(m)
+                    line2_start = m.start()
+                    # try to match the 3rd group at the same position. 3rd pattern is 17 chars long
+                    match_line3 = regex_3.match(pretty_test_image[i + 1][line2_start:line2_start + 17])
+                    if match_line3:
+                        # now try to find the 1st pattern in the line above. 1st pattern is 19 chars long
+                        match_line1 = regex_1.match(pretty_test_image[i - 1][line2_start:line2_start + 19])
+                        if match_line1:
+                            # we found a sea monster!
+                            print()
+                            print(f'Found sea monster! Image rotation: {rot}, flip: {flip}. Loc: {i}:{line2_start}')
+                            # print_image(pretty_test_image)
+                            monster_count += 1
+                            found = True
+
+        if found:
+            print()
+            print_image(pretty_test_image)
+
+print()
+print(f'Found {monster_count} monsters.')
+
+# each monster has 15 #s. Count the number of 1s in the image and remove monster_count * 15
+# the image rotation is not important here.
+
+number_of_water_tiles = np.sum(final_image)
+part2 = number_of_water_tiles - 15 * monster_count
+print()
+print(f'Part 2: {part2}')
+
+
+# Part 2: 2231
