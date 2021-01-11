@@ -5,6 +5,22 @@ import numpy as np
 
 
 def get_tile_checksum(t):
+    """
+    This uses two squares as the image representations:
+
+    Original orientation        Same, but horizontally flipped with sides
+        Side: 0                             >
+       --->                                 4
+      --------                         ^ 7     5 v
+     ^| 0   1 ||                            6
+    3||       || 1                          <
+     ||       |v
+      | 3    2|
+      ---------
+       <-----
+          2
+    """
+
     checksum = []
     # orig, upper (1-0)
     checksum.append(int(''.join([str(x) for x in t[0]]), 2))
@@ -145,7 +161,9 @@ for x in corners:
 # data structures
 image_grid = []
 aligned_tiles = dict()
-# opposite sides
+# opposite sides - use to find the opposing side in a tile
+# e.g. if the left side connects from side 0, then the right side is 2 and we need to look
+# for the next tile connecting to the checksum on side 2
 opp_sides = {
     0: 2,
     1: 3,
@@ -156,6 +174,8 @@ opp_sides = {
     6: 4,
     7: 5
 }
+# similar, find the bottom side if side 0 is right. This is used to store the bottom side,
+# to which the next row down needs to connect each tile.
 bottom_side = {
     0: 1,
     1: 2,
@@ -287,9 +307,7 @@ regex_2 = re.compile(r'#(?:[.#]{4}##){3}#')
 regex_3 = re.compile(r'[.#](?:#[.#]{2}){5}#')
 
 # go through each variant of the image (rotated and flipped) and look for sea monster patterns
-
 monster_count = 0
-#while not found:
 for rot in [0, 1, 2, 3]:
     for flip in [False, True]:
         found = False
@@ -335,6 +353,5 @@ number_of_water_tiles = np.sum(final_image)
 part2 = number_of_water_tiles - 15 * monster_count
 print()
 print(f'Part 2: {part2}')
-
 
 # Part 2: 2231
