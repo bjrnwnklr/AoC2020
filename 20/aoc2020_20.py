@@ -316,6 +316,7 @@ for rot in [0, 1, 2, 3]:
             test_image = np.flipud(test_image)
         test_image = np.rot90(test_image, rot)
         pretty_test_image = pretty_image(test_image)
+        pretty_test_image_w_monsters = pretty_image(test_image)
 
         # find the 2nd pattern
         for i in range(1, len(pretty_test_image)):
@@ -339,9 +340,25 @@ for rot in [0, 1, 2, 3]:
                             monster_count += 1
                             found = True
 
+                            # insert the monster image at the position
+                            monster_pixel_pos = [
+                                (i - 1, [18]),
+                                (i, [0, 5, 6, 11, 12, 17, 18, 19]),
+                                (i + 1, [1, 4, 7, 10, 13, 16])
+                            ]
+                            for r, cols in monster_pixel_pos:
+                                temp_row = [p for p in pretty_test_image_w_monsters[r]]
+                                for c in cols:
+                                    temp_row[c + line2_start] = 'O'
+                                pretty_test_image_w_monsters[r] = ''.join(temp_row)
+
         if found:
             print()
+            print('Image w/out monsters:')
             print_image(pretty_test_image)
+            print()
+            print('Image w/ monsters:')
+            print_image(pretty_test_image_w_monsters)
 
 print()
 print(f'Found {monster_count} monsters.')
