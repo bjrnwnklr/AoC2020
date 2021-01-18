@@ -70,3 +70,36 @@ print()
 print(f'Part 1: {part1}')
 
 # part 1: 2584
+
+# Part 2:
+
+# take ingredient that only can be one possible allergen, add it to a queue and remove it from all other
+# ingredients. Then take the next one that only has one possible allergen etc
+
+final_allergens = dict()
+queue = [x for x in possible_allergens if len(possible_allergens[x]) == 1]
+
+while queue:
+    # get next element and since we know what allergen it is, add it to the final dict
+    ing = queue.pop(0)
+    # get the final allergen (the only element in the set)
+    allg = possible_allergens[ing].pop()
+    final_allergens[allg] = ing
+    # now remove the allergen and ingredient from the dictionary
+    possible_allergens.pop(ing)
+    for x in possible_allergens:
+        if allg in possible_allergens[x]:
+            possible_allergens[x].remove(allg)
+        if len(possible_allergens[x]) == 1:
+            queue.append(x)
+
+print()
+print('Final allergens:')
+for x in final_allergens:
+    print(f'{x}: {final_allergens[x]}')
+
+# generate the part2 output, ingredients sorted by allergen name
+part2 = ','.join([final_allergens[x] for x in sorted(final_allergens)])
+print()
+print('Part 2:')
+print(part2)
