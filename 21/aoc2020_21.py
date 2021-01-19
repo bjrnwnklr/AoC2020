@@ -90,8 +90,8 @@ while queue:
     for x in possible_allergens:
         if allg in possible_allergens[x]:
             possible_allergens[x].remove(allg)
-        if len(possible_allergens[x]) == 1:
-            queue.append(x)
+
+    queue = [x for x in possible_allergens if len(possible_allergens[x]) == 1]
 
 print()
 print('Final allergens:')
@@ -103,3 +103,5 @@ part2 = ','.join([final_allergens[x] for x in sorted(final_allergens)])
 print()
 print('Part 2:')
 print(part2)
+
+# Part 2: fqhpsl,zxncg,clzpsl,zbbnj,jkgbvlxh,dzqc,ppj,glzb
