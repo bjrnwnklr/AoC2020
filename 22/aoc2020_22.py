@@ -44,6 +44,6 @@ mult = lambda x: x[0] * x[1]
 score = sum(map(mult, zip(range(len(players[winner]), 0, -1), players[winner])))
 print(f'Winning score: {score}')
 
-# part 1: 31957
+# part 1: 31957 (player 0 - the crab! - wins!)
 
 
