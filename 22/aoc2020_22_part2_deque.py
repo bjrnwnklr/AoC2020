@@ -1,4 +1,5 @@
 import timeit
+from collections import deque
 
 # f_name = 'ex1.txt'
 f_name = 'input.txt'
@@ -23,7 +24,7 @@ def play_recursive(players):
     winner = 0
     while all(players.values()):
         # check if we had the same config previously
-        current_config = [players[p][:] for p in players]
+        current_config = [tuple(players[p]) for p in players]
         if current_config in configs:
             winner = 0
             # print(f'Recursion prevention! The winner of game {game} is player {winner}!')
@@ -40,7 +41,7 @@ def play_recursive(players):
 
             cards = []
             for p in players:
-                card = players[p].pop(0)
+                card = players[p].popleft()
                 # print(f'Player {p} plays: {card}')
                 cards.append(card)
 
@@ -48,7 +49,7 @@ def play_recursive(players):
             if all(len(players[p]) >= cards[p] for p in players):
                 # print('Playing a sub-game to determine the winner...')
                 next_players = {
-                    p: players[p][:cards[p]]
+                    p: deque(list(players[p])[:cards[p]])
                     for p in players
                 }
                 winner = play_recursive(next_players)
@@ -72,7 +73,7 @@ if __name__ == '__main__':
         stacks = f.read().split('\n\n')
         for player, s in enumerate(stacks):
             cards = s.strip().split('\n')[1:]
-            players[player] = [int(c.strip()) for c in cards]
+            players[player] = deque([int(c.strip()) for c in cards])
 
     # Play!
     start_time = timeit.default_timer()
