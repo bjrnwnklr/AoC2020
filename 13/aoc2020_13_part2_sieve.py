@@ -3,7 +3,9 @@ f_name = 'ex1.txt'
 
 with open(f_name, 'r') as f:
     line = f.readlines()[1]
-    schedule = [(int(n), i) for i, n in enumerate(line.strip().split(',')) if n != 'x']
+    schedule = [(int(n), (int(n) - i) % int(n)) for i, n in enumerate(line.strip().split(',')) if n != 'x']
+
+print(schedule)
 
 a = 0
 b = 1
