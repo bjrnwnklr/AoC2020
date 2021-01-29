@@ -1,7 +1,8 @@
 # input_numbers = [7, 5, 11, 13]
 # input_numbers = [67, 7, 59, 61]
 # input_numbers = [67, 7, 'x', 59, 61]
-f_name = 'input.txt'
+f_name = 'ex1.txt'
+# f_name = 'input.txt'
 
 with open(f_name, 'r') as f:
     f.readline()
