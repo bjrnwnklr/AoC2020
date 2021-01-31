@@ -1,3 +1,5 @@
+import timeit
+
 class Tile:
     def __init__(self, pos, color=0):
         # color: 0=white, 1=black
@@ -72,6 +74,12 @@ class Floor:
                 count += 1
         return count
 
+    def _get_neighbors(self, pos):
+        return [
+            tuple(pos[i] + neighbor[i] for i in range(3))
+            for neighbor in self.directions.values()
+        ]
+
     def flip_all(self):
         flip_queue = []
         mins, maxs = self._grid_dimensions()
@@ -94,6 +102,30 @@ class Floor:
         for t in flip_queue:
             self.tiles[t].flip()
 
+    def flip_all_opt(self):
+        flip_queue = []
+        # first flip all known tiles
+        for pos in self.tiles:
+            black_tiles = self._neighbor_black_tiles(pos)
+            if self.tiles[pos].color == 1:
+                if black_tiles == 0 or black_tiles > 2:
+                    flip_queue.append(pos)
+            else:
+                if black_tiles == 2:
+                    flip_queue.append(pos)
+
+        # now go through all black tiles and check any surrounding white tiles
+        # that are not yet in the dict of tiles
+        for pos in [p for p in self.tiles if self.tiles[p].color == 1]:
+            neighbors = self._get_neighbors(pos)
+            for n in neighbors:
+                if n not in self.tiles and self._neighbor_black_tiles(n) == 2:
+                    self.tiles[n] = Tile(n)
+                    flip_queue.append(n)
+
+        for t in flip_queue:
+            self.tiles[t].flip()
+
 
 if __name__ == '__main__':
     # f_name = 'ex1.txt'
@@ -110,9 +142,15 @@ if __name__ == '__main__':
     print(f'Part 1: {part1}')
 
     # Part 2 - game of life (again...)
+    # Running floor.flip_all() takes 424 seconds as it checks each grid coordinate
+    # Running floor.flip_all_opt() takes 4.8 seconds as it only checks tiles surrounding black tiles
+    start_time = timeit.default_timer()
     for day in range(1, 101):
         floor.flip_all()
+        # floor.flip_all_opt()
         print(f'Day {day}: {floor.get_black_tiles()}')
+
+    print(f'Duration: {timeit.default_timer() - start_time:.2f} seconds')
 
 # part 1: 269
 # Part 2: 3667
