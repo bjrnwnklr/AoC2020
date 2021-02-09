@@ -1,5 +1,7 @@
-def transform_subject_number_memo(subject_number, loop_size):
-    global memo
+import aoctools
+
+
+def transform_subject_number_memo(subject_number, loop_size, memo):
 
     divider = 20201227
 
@@ -15,36 +17,45 @@ def transform_subject_number_memo(subject_number, loop_size):
 
     return value
 
+@aoctools.aoc_timer
+def solve_memo(inp):
+    public_keys = inp
+    memo = dict()
 
-# f_name = 'ex1.txt'
-f_name = 'input.txt'
+    loop_sizes = []
+    for pk in public_keys:
+        cycles = 1
+        subject_number = 7
+        while transform_subject_number_memo(subject_number, cycles, memo) != pk:
+            cycles += 1
+            if cycles % 100_000 == 0:
+                print(cycles)
+        print(pk, cycles)
+        loop_sizes.append(cycles)
+
+    print(loop_sizes)
+    # get the final encryption key
+    enc_keys = []
+    for i, pk in enumerate(public_keys):
+        enc_keys.append(pow(pk, loop_sizes[(i + 1) % 2], 20201227))
+
+    print(enc_keys)
 
 
-with open(f_name, 'r') as f:
-    public_keys = list(map(int, f.readlines()))
+if __name__ == '__main__':
 
-memo = dict()
+    # f_name = 'ex1.txt'
+    f_name = 'input.txt'
 
-loop_sizes = []
-for pk in public_keys:
-    cycles = 1
-    subject_number = 7
-    while transform_subject_number_memo(subject_number, cycles) != pk:
-        cycles += 1
-        if cycles % 100_000 == 0:
-            print(cycles)
-    print(pk, cycles)
-    loop_sizes.append(cycles)
 
-print(loop_sizes)
-# get the final encryption key
-enc_keys = []
-for i, pk in enumerate(public_keys):
-    enc_keys.append(pow(pk, loop_sizes[(i + 1) % 2], 20201227))
-    # enc_keys.append(transform_subject_number(pk, loop_sizes[(i + 1) % 2]))
+    with open(f_name, 'r') as f:
+        public_keys = list(map(int, f.readlines()))
 
-print(enc_keys)
+        solve_memo(public_keys)
 
-# Part 1: 18433997 (takes a few minutes using the pow function; much longer if using manual implementation)
-# The fastest way is (as usual!) to use memoization and just store the result from each calculation, as we
-# go back to the calculation for loop_size + 1 and re-use the already calculated value for loop_size.
+
+
+
+    # Part 1: 18433997 (takes a few minutes using the pow function; much longer if using manual implementation)
+    # The fastest way is (as usual!) to use memoization and just store the result from each calculation, as we
+    # go back to the calculation for loop_size + 1 and re-use the already calculated value for loop_size.
