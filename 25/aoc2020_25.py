@@ -28,13 +28,38 @@ def solve_memo(inp):
         subject_number = 7
         while transform_subject_number_memo(subject_number, cycles, memo) != pk:
             cycles += 1
-            if cycles % 100_000 == 0:
-                print(cycles)
+            # if cycles % 100_000 == 0:
+            #     print(cycles)
         print(pk, cycles)
         loop_sizes.append(cycles)
 
     print(loop_sizes)
     # get the final encryption key
+    enc_keys = []
+    for i, pk in enumerate(public_keys):
+        enc_keys.append(pow(pk, loop_sizes[(i + 1) % 2], 20201227))
+
+    print(enc_keys)
+
+
+@aoctools.aoc_timer
+def solve_loop(inp):
+    public_keys = inp
+    divider = 20201227
+    subject_number = 7
+
+    cycles = 0
+    value = 1
+    loop_sizes = []
+    for pk in public_keys:
+        while value != pk:
+            value *= subject_number
+            value %= divider
+            cycles += 1
+        print(pk, cycles)
+        loop_sizes.append(cycles)
+
+    print(loop_sizes)
     enc_keys = []
     for i, pk in enumerate(public_keys):
         enc_keys.append(pow(pk, loop_sizes[(i + 1) % 2], 20201227))
@@ -51,7 +76,9 @@ if __name__ == '__main__':
     with open(f_name, 'r') as f:
         public_keys = list(map(int, f.readlines()))
 
-        solve_memo(public_keys)
+    solve_memo(public_keys[:])
+
+    solve_loop(public_keys[:])
 
 
 
